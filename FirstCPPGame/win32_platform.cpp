@@ -6,10 +6,26 @@
 //Since we are making a graphical interface for the Windows platform, we need to include the windows.h header, and declare a WinMain as our entry point.
 #include <windows.h>
 
+bool running = true;
+
 //Create our window callback function.
 LRESULT CALLBACK window_callback(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	return DefWindowProc(hwnd, uMsg, wParam, lParam);
+	LRESULT result = 0;
+
+	switch (uMsg) {//Interpret messages from the window for our program.
+		//Close the window if we get the close or destroyed message
+		case WM_CLOSE:
+		case WM_DESTROY: {
+			running = false;
+		} break;
+			//If we don't, we just return default result.
+		default: {
+			result = DefWindowProc(hwnd, uMsg, wParam, lParam);
+		}
+	}
+
+	return result;
 }
 
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) 
@@ -26,6 +42,22 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 
 	//CreateWindow takes the class name of the window, the Title, style options, so overlapped and visible, we let windows decide where to spawn the window, width height
 	//We give it 0 for both WndParent (theres no parent) and for hMenu, pass our WinMain hInstance, and theres no lpParam for us.
-	//That's a LOT
-	CreateWindow(window_class.lpszClassName, L"My First Game in C++", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720, 0, 0, hInstance, 0);
+	//We store the created window to a variable for later use.
+	HWND window = CreateWindow(window_class.lpszClassName, L"My First Game in C++", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720, 0, 0, hInstance, 0);
+
+	while (running) {
+		//This is where we create our game loop!
+
+		//Get input
+		//During this step, we want to process messages we got and haven't dealt with yet.
+		MSG message;
+		while (PeekMessage(&message, window, 0, 0, PM_REMOVE)) {//PeekMessage gives us all of the messages we haven't read yet, and we set the message to the ref, tell it from our window we made, tell it filters, which are 0, and what to do with the messages, which is get rid of them.
+			TranslateMessage(&message);//Translate the message
+			DispatchMessage(&message);//Dispatch the message to our callback!
+		}
+
+		//Simulate
+
+		//Render
+	}
 }
