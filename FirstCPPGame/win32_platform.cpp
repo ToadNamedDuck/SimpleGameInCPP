@@ -12,6 +12,7 @@ bool running = true;
 void* buffer_memory;
 int buffer_width;
 int buffer_height;
+BITMAPINFO buffer_bitmap_info;
 
 //Create our window callback function.
 LRESULT CALLBACK window_callback(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -44,6 +45,15 @@ LRESULT CALLBACK window_callback(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 			//Third is our ability to reserve a chunk of memory, and commit/reserve the section at one time, which means memory in this section will be initialized to 0.
 			//Fourth is the protection level, and PAGE_READWRITE allows us to read and write to a dynamically sized section like this one :D.
 			buffer_memory = VirtualAlloc(0, buffer_size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+			//Now that memory is allocated, we need to generate our bitmapinfo pieces, and most of the data is in its header structure.
+			buffer_bitmap_info.bmiHeader.biSize = sizeof(buffer_bitmap_info.bmiHeader);
+			buffer_bitmap_info.bmiHeader.biWidth = buffer_width;
+			buffer_bitmap_info.bmiHeader.biHeight = buffer_height;
+			buffer_bitmap_info.bmiHeader.biPlanes = 1;
+			buffer_bitmap_info.bmiHeader.biBitCount = 32; //32 since we are running on the size of a 32 bit integer.
+			buffer_bitmap_info.bmiHeader.biCompression = BI_RGB;
+
+			//pass the pointer of this to our function in the render step of the game loop.
 		} break;
 			//If we don't, we just return default result.
 		default: {
@@ -70,6 +80,9 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 	//We give it 0 for both WndParent (theres no parent) and for hMenu, pass our WinMain hInstance, and theres no lpParam for us.
 	//We store the created window to a variable for later use.
 	HWND window = CreateWindow(window_class.lpszClassName, L"My First Game in C++", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720, 0, 0, hInstance, 0);
+	//To create our window context, we need to use a function that returns it in context to our created window.
+	HDC device_context = GetDC(window);
+
 
 	while (running) {
 		//This is where we create our game loop!
@@ -87,6 +100,18 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 		//Render
 		//To render, we need to get the buffer, fill it, and send it to the OS to handle.
 		//To get the proper buffer, we need to get the proper size of the window, which the player could change, so to properly handle that, get it every cycle from messages sent to window.
+		//That happens in the proc on a wm size message case.
+		
+		//Needs a handle to a device context, which is how windows recognizes our window.
+		//X/Y destinations, which we set to 0 (which should be top left of our window.)
+		//Width/Height of our window.
+		//IDK what xSrc and ySrc are but we set them to 0
+		//Width and Height src should be the same as the buffer size, since our buffer is the same size as our window.
+		//The memory that we are passing from goes into the next spot
+		//The bitmap info we created in our proc goes in
+		//The usage, which is rgb colors
+		//Finally, the operation to perform, which is copy from the buffer into the window.
+		StretchDIBits(device_context, 0, 0, buffer_width, buffer_height, 0, 0, buffer_width, buffer_height, buffer_memory, &buffer_bitmap_info, DIB_RGB_COLORS, SRCCOPY);
 
 	}
 }
