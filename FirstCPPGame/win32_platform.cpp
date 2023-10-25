@@ -101,6 +101,13 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 		//To render, we need to get the buffer, fill it, and send it to the OS to handle.
 		//To get the proper buffer, we need to get the proper size of the window, which the player could change, so to properly handle that, get it every cycle from messages sent to window.
 		//That happens in the proc on a wm size message case.
+
+		unsigned int* pixel = (unsigned int*)buffer_memory;//Cast the memory to the first pixel and do a loop to change their colors.
+		for (int y = 0; y < buffer_height; y++) {
+			for (int x = 0; x < buffer_width; x++) {
+				*pixel++ = 0xc285d3;
+			}
+		}
 		
 		//Needs a handle to a device context, which is how windows recognizes our window.
 		//X/Y destinations, which we set to 0 (which should be top left of our window.)
