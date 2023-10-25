@@ -8,6 +8,11 @@
 
 bool running = true;
 
+//We want our buffer variables global. void* is essentially "I don't care what you type it as" or similar to how I use var in another language.
+void* buffer_memory;
+int buffer_width;
+int buffer_height;
+
 //Create our window callback function.
 LRESULT CALLBACK window_callback(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -23,12 +28,22 @@ LRESULT CALLBACK window_callback(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 		case WM_SIZE: {
 			RECT rect;
 			GetClientRect(hwnd, &rect);
-			int width = rect.right - rect.left;
-			int height = rect.bottom - rect.top;
+			buffer_width = rect.right - rect.left;
+			buffer_height = rect.bottom - rect.top;
 			//Our buffer contains width*height pixels.
 			//each pixel stores 32 bits of data. (unsigned int)
 
-			int buffer_size = width * height * sizeof(unsigned int);
+			int buffer_size = buffer_width * buffer_height * sizeof(unsigned int);
+
+			//We need to get a heap of memory from the operating system, and since this is windows, we can use the windows library for this.
+			//Before we set our buffer memory, we need to check and see if the buffer has already been set, so we can release it and dynamically recreate our buffer size.
+			if (buffer_memory) VirtualFree(buffer_memory, 0, MEM_RELEASE);
+
+			//The first param has something to do with the address in memory we want to allocate, which we just set to 0 and I think get a fresh page of memory.
+			//Second param is our calculated buffer size
+			//Third is our ability to reserve a chunk of memory, and commit/reserve the section at one time, which means memory in this section will be initialized to 0.
+			//Fourth is the protection level, and PAGE_READWRITE allows us to read and write to a dynamically sized section like this one :D.
+			buffer_memory = VirtualAlloc(0, buffer_size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 		} break;
 			//If we don't, we just return default result.
 		default: {
