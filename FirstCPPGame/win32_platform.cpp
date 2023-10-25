@@ -19,6 +19,17 @@ LRESULT CALLBACK window_callback(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 		case WM_DESTROY: {
 			running = false;
 		} break;
+		//This is the message for window changing size so we can get the proper buffer.
+		case WM_SIZE: {
+			RECT rect;
+			GetClientRect(hwnd, &rect);
+			int width = rect.right - rect.left;
+			int height = rect.bottom - rect.top;
+			//Our buffer contains width*height pixels.
+			//each pixel stores 32 bits of data. (unsigned int)
+
+			int buffer_size = width * height * sizeof(unsigned int);
+		} break;
 			//If we don't, we just return default result.
 		default: {
 			result = DefWindowProc(hwnd, uMsg, wParam, lParam);
@@ -59,5 +70,8 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 		//Simulate
 
 		//Render
+		//To render, we need to get the buffer, fill it, and send it to the OS to handle.
+		//To get the proper buffer, we need to get the proper size of the window, which the player could change, so to properly handle that, get it every cycle from messages sent to window.
+
 	}
 }
