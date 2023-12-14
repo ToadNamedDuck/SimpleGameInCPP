@@ -17,7 +17,18 @@ void clear_screen(unsigned int color) {//reset the pixels to a provided color.
 	}
 }
 
+inline int clamp(int min, int val, int max) {
+	if (val > max) return max;
+	if (val < min) return min;
+	return val;
+}
+
 void draw_rect(int x0, int y0, int x1, int y1, unsigned int color) {//Now we need to offset a region to draw a rectangle in.
+	x0 = clamp(0, x0, render_state.width);
+	x1 = clamp(0, x1, render_state.width);
+	y0 = clamp(0, y0, render_state.height);
+	y1 = clamp(0, y1, render_state.height);
+
 	for (int y = y0; y < y1; y++) {//Starting y is y0, end is y1
 		unsigned int* pixel = (unsigned int*)render_state.memory + x0 + y*render_state.width;//We offset the pixel by the current x, and then y*the width of the window.
 		for (int x = x0; x < x1; x++) {//starting x is x0, and is x1
