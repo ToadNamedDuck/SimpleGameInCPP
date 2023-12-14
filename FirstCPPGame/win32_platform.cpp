@@ -9,10 +9,14 @@
 bool running = true;
 
 //We want our buffer variables global. void* is essentially "I don't care what you type it as" or similar to how I use var in another language.
-void* buffer_memory;
-int buffer_width;
-int buffer_height;
-BITMAPINFO buffer_bitmap_info;
+//Rework into struct.
+struct Render_State {
+	int height, width;
+	void* memory;
+
+	BITMAPINFO bitmapinfo;
+};
+Render_State render_state;
 
 //Create our window callback function.
 LRESULT CALLBACK window_callback(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -29,29 +33,29 @@ LRESULT CALLBACK window_callback(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 		case WM_SIZE: {
 			RECT rect;
 			GetClientRect(hwnd, &rect);
-			buffer_width = rect.right - rect.left;
-			buffer_height = rect.bottom - rect.top;
+			render_state.width = rect.right - rect.left;
+			render_state.height = rect.bottom - rect.top;
 			//Our buffer contains width*height pixels.
 			//each pixel stores 32 bits of data. (unsigned int)
 
-			int buffer_size = buffer_width * buffer_height * sizeof(unsigned int);
+			int render_state_size = render_state.width * render_state.height * sizeof(unsigned int);
 
 			//We need to get a heap of memory from the operating system, and since this is windows, we can use the windows library for this.
 			//Before we set our buffer memory, we need to check and see if the buffer has already been set, so we can release it and dynamically recreate our buffer size.
-			if (buffer_memory) VirtualFree(buffer_memory, 0, MEM_RELEASE);
+			if (render_state.memory) VirtualFree(render_state.memory, 0, MEM_RELEASE);
 
 			//The first param has something to do with the address in memory we want to allocate, which we just set to 0 and I think get a fresh page of memory.
 			//Second param is our calculated buffer size
 			//Third is our ability to reserve a chunk of memory, and commit/reserve the section at one time, which means memory in this section will be initialized to 0.
 			//Fourth is the protection level, and PAGE_READWRITE allows us to read and write to a dynamically sized section like this one :D.
-			buffer_memory = VirtualAlloc(0, buffer_size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+			render_state.memory = VirtualAlloc(0, render_state_size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 			//Now that memory is allocated, we need to generate our bitmapinfo pieces, and most of the data is in its header structure.
-			buffer_bitmap_info.bmiHeader.biSize = sizeof(buffer_bitmap_info.bmiHeader);
-			buffer_bitmap_info.bmiHeader.biWidth = buffer_width;
-			buffer_bitmap_info.bmiHeader.biHeight = buffer_height;
-			buffer_bitmap_info.bmiHeader.biPlanes = 1;
-			buffer_bitmap_info.bmiHeader.biBitCount = 32; //32 since we are running on the size of a 32 bit integer.
-			buffer_bitmap_info.bmiHeader.biCompression = BI_RGB;
+			render_state.bitmapinfo.bmiHeader.biSize = sizeof(render_state.bitmapinfo.bmiHeader);
+			render_state.bitmapinfo.bmiHeader.biWidth = render_state.width;
+			render_state.bitmapinfo.bmiHeader.biHeight = render_state.height;
+			render_state.bitmapinfo.bmiHeader.biPlanes = 1;
+			render_state.bitmapinfo.bmiHeader.biBitCount = 32; //32 since we are running on the size of a 32 bit integer.
+			render_state.bitmapinfo.bmiHeader.biCompression = BI_RGB;
 
 			//pass the pointer of this to our function in the render step of the game loop.
 		} break;
@@ -102,12 +106,12 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 		//To get the proper buffer, we need to get the proper size of the window, which the player could change, so to properly handle that, get it every cycle from messages sent to window.
 		//That happens in the proc on a wm size message case.
 
-		unsigned int* pixel = (unsigned int*)buffer_memory;//Cast the memory to the first pixel and do a loop to change their colors.
-		for (int y = 0; y < buffer_height; y++) {
-			for (int x = 0; x < buffer_width; x++) {
-				*pixel++ = 0xc285d3;
+		unsigned int* pixel = (unsigned int*)render_state.memory;//We are going through the memory, which is the same size as window, and setting "pixel" to the current value of the spot in memory
+		for (int y = 0; y < render_state.height; y++) {//What this is doing is defining which "row" we are on
+			for (int x = 0; x < render_state.width; x++) {//Select our "column"
+				*pixel++ = 0xc285d3;//set the individual spot in memory to this value so we can display its value (color)
 			}
-		}
+		}//We are at 8:40 ish in the video. time for a break.
 		
 		//Needs a handle to a device context, which is how windows recognizes our window.
 		//X/Y destinations, which we set to 0 (which should be top left of our window.)
@@ -118,7 +122,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 		//The bitmap info we created in our proc goes in
 		//The usage, which is rgb colors
 		//Finally, the operation to perform, which is copy from the buffer into the window.
-		StretchDIBits(device_context, 0, 0, buffer_width, buffer_height, 0, 0, buffer_width, buffer_height, buffer_memory, &buffer_bitmap_info, DIB_RGB_COLORS, SRCCOPY);
+		StretchDIBits(device_context, 0, 0, render_state.width, render_state.height, 0, 0, render_state.width, render_state.height, render_state.memory, &render_state.bitmapinfo, DIB_RGB_COLORS, SRCCOPY);
 
 	}
 }
