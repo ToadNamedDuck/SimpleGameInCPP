@@ -6,6 +6,7 @@
 //Since we are making a graphical interface for the Windows platform, we need to include the windows.h header, and declare a WinMain as our entry point.
 #include <windows.h>
 
+
 bool running = true;
 
 //We want our buffer variables global. void* is essentially "I don't care what you type it as" or similar to how I use var in another language.
@@ -17,6 +18,8 @@ struct Render_State {
 	BITMAPINFO bitmapinfo;
 };
 Render_State render_state;
+#include "renderer.cpp"
+//It is included here because it relies on this global.
 
 //Create our window callback function.
 LRESULT CALLBACK window_callback(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -100,18 +103,12 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 		}
 
 		//Simulate
-
+		render_background();
 		//Render
+		// 
 		//To render, we need to get the buffer, fill it, and send it to the OS to handle.
 		//To get the proper buffer, we need to get the proper size of the window, which the player could change, so to properly handle that, get it every cycle from messages sent to window.
 		//That happens in the proc on a wm size message case.
-
-		unsigned int* pixel = (unsigned int*)render_state.memory;//We are going through the memory, which is the same size as window, and setting "pixel" to the current value of the spot in memory
-		for (int y = 0; y < render_state.height; y++) {//What this is doing is defining which "row" we are on
-			for (int x = 0; x < render_state.width; x++) {//Select our "column"
-				*pixel++ = 0xc285d3;//set the individual spot in memory to this value so we can display its value (color)
-			}
-		}//We are at 8:40 ish in the video. time for a break.
 		
 		//Needs a handle to a device context, which is how windows recognizes our window.
 		//X/Y destinations, which we set to 0 (which should be top left of our window.)
