@@ -5,6 +5,7 @@
 //Since we are devloping using the Windows API, we can find resources for future API requests on MSDN.
 //Since we are making a graphical interface for the Windows platform, we need to include the windows.h header, and declare a WinMain as our entry point.
 #include <windows.h>
+#include "utils.cpp"
 
 
 bool running = true;
@@ -41,7 +42,7 @@ LRESULT CALLBACK window_callback(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 			//Our buffer contains width*height pixels.
 			//each pixel stores 32 bits of data. (unsigned int)
 
-			int render_state_size = render_state.width * render_state.height * sizeof(unsigned int);
+			int render_state_size = render_state.width * render_state.height * sizeof(u32);
 
 			//We need to get a heap of memory from the operating system, and since this is windows, we can use the windows library for this.
 			//Before we set our buffer memory, we need to check and see if the buffer has already been set, so we can release it and dynamically recreate our buffer size.
