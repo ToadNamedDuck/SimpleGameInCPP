@@ -23,15 +23,19 @@ draw_rect_in_pixels(int x0, int y0, int x1, int y1, u32 color) {//Now we need to
 	}
 }
 
+global_variable float scale_multiplier = 0.01f;
+//Scale multiplier means our draw rect can accept whole numbers and convert them into a percentage of the screen in which to draw the rect.
+//So 100 is a full screen, whereas 10 is 10% of the screen.
+
 internal void
 draw_rect(float x, float y, float half_size_x, float half_size_y, u32 color) {
 	//To make the rect relative to screen size, we need to multiply them by the width and height of the screen - or one or the other.
 	//Height will proportionally scale the rectangles. Same height but wider screens see more of the world, which in some cases, is ideal.
 	//Personally I would do width and height so monitors see the same area, but alas.
-	x *= render_state.height;
-	half_size_x *= render_state.height;
-	y *= render_state.height;
-	half_size_y *= render_state.height;
+	x *= render_state.height * scale_multiplier;
+	half_size_x *= render_state.height * scale_multiplier;
+	y *= render_state.height * scale_multiplier;
+	half_size_y *= render_state.height * scale_multiplier;
 
 	//To make "0,0" relatively centered, we need to add half of the render width and height to x and y respectively.
 	x += render_state.width / 2.f;
