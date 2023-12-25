@@ -1,14 +1,5 @@
-void render_background() {
-
-	unsigned int* pixel = (u32*)render_state.memory;//We are going through the memory, which is the same size as window, and setting "pixel" to the current value of the spot in memory
-	for (int y = 0; y < render_state.height; y++) {//What this is doing is defining which "row" we are on
-		for (int x = 0; x < render_state.width; x++) {//Select our "column"
-			*pixel++ = 0xc285d3;//set the individual spot in memory to this value so we can display its value (color)
-		}
-	}
-}
-
-void clear_screen(u32 color) {//reset the pixels to a provided color.
+internal void
+clear_screen(u32 color) {//reset the pixels to a provided color.
 	unsigned int* pixel = (unsigned int*)render_state.memory;
 	for (int y = 0; y < render_state.height; y++) {
 		for (int x = 0; x < render_state.width; x++) {
@@ -17,7 +8,8 @@ void clear_screen(u32 color) {//reset the pixels to a provided color.
 	}
 }
 
-void draw_rect(int x0, int y0, int x1, int y1, u32 color) {//Now we need to offset a region to draw a rectangle in.
+internal void
+draw_rect(int x0, int y0, int x1, int y1, u32 color) {//Now we need to offset a region to draw a rectangle in.
 	x0 = clamp(0, x0, render_state.width);
 	x1 = clamp(0, x1, render_state.width);
 	y0 = clamp(0, y0, render_state.height);

@@ -8,7 +8,7 @@
 #include "utils.cpp"
 
 
-bool running = true;
+ global_variable bool running = true;
 
 //We want our buffer variables global. void* is essentially "I don't care what you type it as" or similar to how I use var in another language.
 //Rework into struct.
@@ -18,7 +18,7 @@ struct Render_State {
 
 	BITMAPINFO bitmapinfo;
 };
-Render_State render_state;
+global_variable Render_State render_state;
 #include "renderer.cpp"
 //It is included here because it relies on this global.
 
@@ -104,7 +104,6 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 		}
 
 		//Simulate
-		render_background();
 		clear_screen(0xc285d3);
 		draw_rect(50, 50, 200, 500, 0x00ff00);
 		//Render
