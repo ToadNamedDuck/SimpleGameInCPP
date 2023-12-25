@@ -9,7 +9,7 @@ clear_screen(u32 color) {//reset the pixels to a provided color.
 }
 
 internal void
-draw_rect(int x0, int y0, int x1, int y1, u32 color) {//Now we need to offset a region to draw a rectangle in.
+draw_rect_in_pixels(int x0, int y0, int x1, int y1, u32 color) {//Now we need to offset a region to draw a rectangle in.
 	x0 = clamp(0, x0, render_state.width);
 	x1 = clamp(0, x1, render_state.width);
 	y0 = clamp(0, y0, render_state.height);
@@ -21,4 +21,27 @@ draw_rect(int x0, int y0, int x1, int y1, u32 color) {//Now we need to offset a 
 			*pixel++ = color;//Set the pixels in this region to the provided color.
 		}
 	}
+}
+
+internal void
+draw_rect(float x, float y, float half_size_x, float half_size_y, u32 color) {
+	//To make the rect relative to screen size, we need to multiply them by the width and height of the screen - or one or the other.
+	//Height will proportionally scale the rectangles. Same height but wider screens see more of the world, which in some cases, is ideal.
+	//Personally I would do width and height so monitors see the same area, but alas.
+	x *= render_state.height;
+	half_size_x *= render_state.height;
+	y *= render_state.height;
+	half_size_y *= render_state.height;
+
+	//To make "0,0" relatively centered, we need to add half of the render width and height to x and y respectively.
+	x += render_state.width / 2.f;
+	y += render_state.height / 2.f;
+
+	//Change to pixels.
+	int x0 = x - half_size_x;
+	int x1 = x + half_size_x;
+	int y0 = y - half_size_y;
+	int y1 = y + half_size_y;
+
+	draw_rect_in_pixels(x0, y0, x1, y1, color);
 }

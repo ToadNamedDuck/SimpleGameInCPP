@@ -105,7 +105,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 
 		//Simulate
 		clear_screen(0xc285d3);
-		draw_rect(50, 50, 200, 500, 0x00ff00);
+		draw_rect(0, 0, .2, .2, 0x00ff00);
 		//Render
 		// 
 		//To render, we need to get the buffer, fill it, and send it to the OS to handle.
