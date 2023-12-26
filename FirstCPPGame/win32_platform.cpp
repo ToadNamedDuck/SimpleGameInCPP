@@ -19,6 +19,7 @@ struct Render_State {
 	BITMAPINFO bitmapinfo;
 };
 global_variable Render_State render_state;
+#include "platform_common.cpp"
 #include "renderer.cpp"
 //It is included here because it relies on this global.
 
@@ -91,6 +92,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 	//To create our window context, we need to use a function that returns it in context to our created window.
 	HDC device_context = GetDC(window);
 
+	Input input = {};
 
 	while (running) {
 		//This is where we create our game loop!
@@ -98,14 +100,45 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 		//Get input
 		//During this step, we want to process messages we got and haven't dealt with yet.
 		MSG message;
+
+		//We need to change every button every frame's changed value to false.
+		for (int i = 0; i < BUTTON_COUNT; i++) {
+			input.buttons[i].changed = false;
+		}
+
 		while (PeekMessage(&message, window, 0, 0, PM_REMOVE)) {//PeekMessage gives us all of the messages we haven't read yet, and we set the message to the ref, tell it from our window we made, tell it filters, which are 0, and what to do with the messages, which is get rid of them.
-			TranslateMessage(&message);//Translate the message
-			DispatchMessage(&message);//Dispatch the message to our callback!
+			
+			switch (message.message)
+			{
+				case WM_KEYUP:	//Test for key presses
+				case WM_KEYDOWN:{
+					//If the user presses a key, we need to detect it
+					u32 vk_code = (u32)message.wParam;//Get us which key is pressed.
+					bool is_down = ((message.lParam & (1 << 31)) == 0);//This is supposed to check if the key is down or up.
+					//The (1 << 31) is a left bit shift to check the position in the signed 32 bit lParam where the 1 would go in the new mask we create by bit shifting.
+					//If the corresponding position in lParam is 0, then the key is down.
+
+					switch (vk_code) {
+						//Since we got a keycode, now we want to check if its one of the keys we care about.
+						//We can use our new struct with the array of keys in it to get the information we care about.
+					case VK_UP: {
+						input.buttons[BUTTON_UP].is_down = is_down;
+						input.buttons[BUTTON_UP].changed = true;
+					}
+					}
+					} break;
+				default: {
+					TranslateMessage(&message);//Translate the message
+					DispatchMessage(&message);//Dispatch the message to our callback!
+				}
+			}
 		}
 
 		//Simulate
 		clear_screen(0xc285d3);
-		draw_rect(0, 0, 12, 17, 0x00ff00);
+		if (input.buttons[BUTTON_UP].is_down) {
+			draw_rect(0, 0, 12, 17, 0x00ff00);
+		}
 		draw_rect(19, -20, 5, 5, 0x00ff00);
 		draw_rect(-15, 25, 8, 4, 0x00ff00);
 		//Render
