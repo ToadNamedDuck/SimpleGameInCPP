@@ -119,13 +119,18 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 					//The (1 << 31) is a left bit shift to check the position in the signed 32 bit lParam where the 1 would go in the new mask we create by bit shifting.
 					//If the corresponding position in lParam is 0, then the key is down.
 
+//This macro is a helper that allows up to quickly set the down state and the change state of buttons we pass into it.
+#define process_button(b, vk)\
+case vk:{\
+input.buttons[b].is_down = is_down;\
+input.buttons[b].changed = true;\
+}break;\
+
 					switch (vk_code) {
-						//Since we got a keycode, now we want to check if its one of the keys we care about.
-						//We can use our new struct with the array of keys in it to get the information we care about.
-					case VK_UP: {
-						input.buttons[BUTTON_UP].is_down = is_down;
-						input.buttons[BUTTON_UP].changed = true;
-					}
+						process_button(BUTTON_UP, VK_UP);
+						process_button(BUTTON_DOWN, VK_DOWN);
+						process_button(BUTTON_LEFT, VK_LEFT);
+						process_button(BUTTON_RIGHT, VK_RIGHT);
 					}
 					} break;
 				default: {
