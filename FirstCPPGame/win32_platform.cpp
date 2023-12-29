@@ -21,6 +21,7 @@ struct Render_State {
 global_variable Render_State render_state;
 #include "platform_common.cpp"
 #include "renderer.cpp"
+#include "game.cpp"
 //It is included here because it relies on this global.
 
 //Create our window callback function.
@@ -135,12 +136,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 		}
 
 		//Simulate
-		clear_screen(0xc285d3);
-		if (input.buttons[BUTTON_UP].is_down) {
-			draw_rect(0, 0, 12, 17, 0x00ff00);
-		}
-		draw_rect(19, -20, 5, 5, 0x00ff00);
-		draw_rect(-15, 25, 8, 4, 0x00ff00);
+		simulate_game(&input);
 		//Render
 		// 
 		//To render, we need to get the buffer, fill it, and send it to the OS to handle.
