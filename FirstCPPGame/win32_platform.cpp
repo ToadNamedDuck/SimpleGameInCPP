@@ -95,6 +95,18 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 
 	Input input = {};
 
+	float delta_time = 16.6666f;//This is the delta time for when to render. Keeps game logic consistent on dif systems.
+	//To start calculating that, we need to get the CPU time at the start and end of the frame.
+	LARGE_INTEGER frame_begin_time;
+	QueryPerformanceFrequency(&frame_begin_time);
+
+	float performance_frequency;
+	{
+		LARGE_INTEGER perf;
+		QueryPerformanceFrequency(&perf);
+		performance_frequency = (float)(perf.QuadPart);
+	}
+
 	while (running) {
 		//This is where we create our game loop!
 
@@ -141,7 +153,7 @@ input.buttons[b].changed = true;\
 		}
 
 		//Simulate
-		simulate_game(&input);
+		simulate_game(&input, delta_time);
 		//Render
 		// 
 		//To render, we need to get the buffer, fill it, and send it to the OS to handle.
@@ -159,5 +171,10 @@ input.buttons[b].changed = true;\
 		//Finally, the operation to perform, which is copy from the buffer into the window.
 		StretchDIBits(device_context, 0, 0, render_state.width, render_state.height, 0, 0, render_state.width, render_state.height, render_state.memory, &render_state.bitmapinfo, DIB_RGB_COLORS, SRCCOPY);
 
+		//End of Frame
+		LARGE_INTEGER frame_end_time;
+		QueryPerformanceCounter(&frame_end_time);
+		delta_time = (float)(frame_end_time.QuadPart - frame_begin_time.QuadPart) / performance_frequency;
+		frame_begin_time = frame_end_time;
 	}
 }
