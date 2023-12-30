@@ -7,14 +7,17 @@ float player_pos = 0.f;//Player position vertical
 
 internal void 
 simulate_game(Input* input, float dt) {
-	clear_screen(0xc285d3);
-	draw_rect(0, 0, 85, 45, 0xaaFFb9);
+	clear_screen(0x881253);
+	draw_rect(0, 0, 85, 45, 0x00cb00);
 
 	float speed = 50.f;//Units per second.
 	if (is_down(BUTTON_UP)) player_pos += speed*dt;
 	if (is_down(BUTTON_DOWN)) player_pos -= speed*dt;
 
 
-	draw_rect(0, player_pos, 2, 2, 0x00ff00);//DRAW AFTER INCREMENTATION
+	draw_rect(0, 0, 1, 1, 0xffffff);//DRAW AFTER INCREMENTATION
+
+	draw_rect(80, 0, 2.5, 12, 0x5522ff);
+	draw_rect(-80, 0, 2.5, 12, 0x5522ff);
 
 }
