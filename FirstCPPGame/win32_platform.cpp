@@ -131,10 +131,10 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 					//The (1 << 31) is a left bit shift to check the position in the signed 32 bit lParam where the 1 would go in the new mask we create by bit shifting.
 					//If the corresponding position in lParam is 0, then the key is down.
 
-//This macro is a helper that allows up to quickly set the down state and the change state of buttons we pass into it.
+//This macro is a helper that allows up to quickly set the down state and the change state of buttons we pass into it. Check for is_down prevents OS multipresses from being read.
 #define process_button(b, vk)\
 case vk:{\
-input.buttons[b].is_down = is_down;\
+input.buttons[b].is_down = is_down != input.buttons[b].is_down;\
 input.buttons[b].changed = true;\
 }break;\
 
