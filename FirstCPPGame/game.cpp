@@ -23,7 +23,7 @@ simulate_game(Input* input, float dt) {
 
 	draw_rect(0, 0, 1, 1, 0xffffff);//DRAW AFTER INCREMENTATION
 
-	draw_rect(80, 0, 2.5, 12, 0x5522ff);
+	draw_rect(80, 0, 2.5, 12, 0x5522ff);//5:10
 	draw_rect(-80, player_pos, 2.5, 12, 0x5522ff);
 
 }
