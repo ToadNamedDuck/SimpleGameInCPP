@@ -134,8 +134,8 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 //This macro is a helper that allows up to quickly set the down state and the change state of buttons we pass into it. Check for is_down prevents OS multipresses from being read.
 #define process_button(b, vk)\
 case vk:{\
-input.buttons[b].is_down = is_down != input.buttons[b].is_down;\
-input.buttons[b].changed = true;\
+input.buttons[b].changed = is_down != input.buttons[b].is_down;\
+input.buttons[b].is_down = is_down;\
 }break;\
 
 					switch (vk_code) {
