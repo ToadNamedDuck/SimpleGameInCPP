@@ -2,10 +2,10 @@
 #define pressed(b) (input->buttons[b].is_down && input->buttons[b].changed)//If the button is down and it has changed since the last frame.
 #define released(b) (!input->buttons[b].is_down && input->buttons[b].changed)//If the button is not down and has changed since the last frame.
 
-float player_1_pos, player_1_derPos, player_2_pos, player_2_derPos;//Player position vertical
+float player_1_pos, player_1_derPos, player_2_pos, player_2_derPos;
 float arena_half_size_x = 85.f, arena_half_size_y = 45.f;
-
 float player_half_size_x = 2.5, player_half_size_y = 12;
+float ball_pos_x, ball_pos_y, ball_derPos_x = 1.f, ball_derPos_y;
 
 
 internal void 
@@ -36,25 +36,24 @@ simulate_game(Input* input, float dt) {
 		player_1_pos = arena_half_size_y - player_half_size_y;
 		player_1_derPos = 0;
 	}
-	if (player_1_pos - player_half_size_y < -arena_half_size_y) {//bottom
-		//So if these are touching, we move the player back and cut their velocity.
+	else if (player_1_pos - player_half_size_y < -arena_half_size_y) {//bottom
 		player_1_pos = -arena_half_size_y + player_half_size_y;
 		player_1_derPos = 0;
 	}
 
 	if (player_2_pos + player_half_size_y > arena_half_size_y) {//top
-		//So if these are touching, we move the player back and cut their velocity.
 		player_2_pos = arena_half_size_y - player_half_size_y;
 		player_2_derPos = 0;
 	}
-	if (player_2_pos - player_half_size_y < -arena_half_size_y) {//bottom
-		//So if these are touching, we move the player back and cut their velocity.
+	else if (player_2_pos - player_half_size_y < -arena_half_size_y) {//bottom
 		player_2_pos = -arena_half_size_y + player_half_size_y;
 		player_2_derPos = 0;
 	}
 
-	draw_rect(0, 0, 1, 1, 0xffffff);//DRAW AFTER INCREMENTATION
+	ball_pos_x += ball_derPos_x * dt;//For whatever reason, this is causing the ball to just completely disappear from the screen. It's depressing. 8:30 ish in the video.
+	ball_pos_y += ball_derPos_y * dt;
 
+	draw_rect(ball_pos_x, ball_pos_y, 1, 1, 0xffffff);//Ball
 	draw_rect(-80, player_1_pos, player_half_size_x, player_half_size_y, 0x5522ff);
 	draw_rect(80, player_2_pos, player_half_size_x, player_half_size_y, 0x5522ff);
 
