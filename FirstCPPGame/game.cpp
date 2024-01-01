@@ -26,6 +26,11 @@ simulate_game(Input* input, float dt) {
 	player_1_pos = player_1_pos + player_1_derPos * dt + player_1_ddp * dt * dt * .5f;
 	player_1_derPos = player_1_derPos + player_1_ddp * dt;
 
+	player_2_ddp -= player_2_derPos * 10.f;
+
+	player_2_pos = player_2_pos + player_2_derPos * dt + player_2_ddp * dt * dt * .5f;
+	player_2_derPos = player_2_derPos + player_2_ddp * dt;
+
 	if (player_1_pos + player_half_size_y > arena_half_size_y) {//top
 		//So if these are touching, we move the player back and cut their velocity.
 		player_1_pos = arena_half_size_y - player_half_size_y;
@@ -47,11 +52,6 @@ simulate_game(Input* input, float dt) {
 		player_2_pos = -arena_half_size_y + player_half_size_y;
 		player_2_derPos = 0;
 	}
-
-	player_2_ddp -= player_2_derPos * 10.f;
-
-	player_2_pos = player_2_pos + player_2_derPos * dt + player_2_ddp * dt * dt * .5f;
-	player_2_derPos = player_2_derPos + player_2_ddp * dt;
 
 	draw_rect(0, 0, 1, 1, 0xffffff);//DRAW AFTER INCREMENTATION
 
