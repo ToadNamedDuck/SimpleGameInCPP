@@ -5,7 +5,7 @@
 float player_1_pos, player_1_derPos, player_2_pos, player_2_derPos;
 float arena_half_size_x = 85.f, arena_half_size_y = 45.f;
 float player_half_size_x = 2.5, player_half_size_y = 12;
-float ball_pos_x, ball_pos_y, ball_derPos_x = 1.f, ball_derPos_y;
+float ball_pos_x, ball_pos_y, ball_derPos_x = 100.f, ball_derPos_y;
 
 
 internal void 

@@ -98,7 +98,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 	float delta_time = 0.016666f;//This is the delta time for when to render. Keeps game logic consistent on dif systems.
 	//To start calculating that, we need to get the CPU time at the start and end of the frame.
 	LARGE_INTEGER frame_begin_time;
-	QueryPerformanceFrequency(&frame_begin_time);
+	QueryPerformanceCounter(&frame_begin_time);
 
 	float performance_frequency;
 	{
