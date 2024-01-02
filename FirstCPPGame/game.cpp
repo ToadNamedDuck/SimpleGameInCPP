@@ -2,18 +2,18 @@
 #define pressed(b) (input->buttons[b].is_down && input->buttons[b].changed)//If the button is down and it has changed since the last frame.
 #define released(b) (!input->buttons[b].is_down && input->buttons[b].changed)//If the button is not down and has changed since the last frame.
 
-float player_1_pos, player_1_derPos, player_2_pos, player_2_derPos;
+float player_1_pos, player_1_derPos, player_2_pos, player_2_derPos, friction = 10;
 float arena_half_size_x = 85.f, arena_half_size_y = 45.f;
 float player_half_size_x = 2.5, player_half_size_y = 12;
 float ball_pos_x, ball_pos_y, ball_derPos_x = 100.f, ball_derPos_y, ball_half_size_x = 1, ball_half_size_y = 1;
 
 //Derivative of position is velocity. DP
 //Derivative of derivative of position is acceleration.
-//Input increases acceleration value, and *friction* can be applied by
+//Input increases acceleration value, and *friction* can be applied by subtracting from acceleration velocity x friction.
 
 internal void
-simulate_player(float *pos, float *vel, float accel, float dt) {
-	accel -= *vel * 10.f;
+simulate_player(float *pos, float *vel, float accel, float frict, float dt) {
+	accel -= *vel * frict;
 	*pos = *pos + *vel * dt + accel * dt * dt * .5f;
 	*vel = *vel + accel * dt;
 
@@ -28,6 +28,22 @@ simulate_player(float *pos, float *vel, float accel, float dt) {
 	}
 }
 
+//This is a function to do Axis-Aligned Bounding Box collision tests (here, for the ball)
+internal bool
+aabb_vs_aabb(float p1_x, float p1_y, float p1_hs_x, float p1_hs_y,
+	float p2_x, float p2_y, float p2_hs_x, float p2_hs_y) {
+	/*
+	* Ideally, when I work on this in a more object-oriented manner, I would just pass the objects of things I want to check against each other.
+	* Like players and enemies, or fireballs and arrows against a wall. Etc.
+	* A task for a future me, I know you'll be up for the task!
+	*/
+	return (p1_x + p1_hs_x > p2_x - p2_hs_x &&
+		p1_x - p1_hs_x < p2_x + p2_hs_x&&
+		p1_y + p1_hs_y > p2_y - p2_hs_y&&
+		p1_y + p1_hs_y < p2_y + p2_hs_y);
+}
+
+
 internal void 
 simulate_game(Input* input, float dt) {
 	clear_screen(0x881253);
@@ -40,8 +56,8 @@ simulate_game(Input* input, float dt) {
 	if (is_down(BUTTON_UP)) player_2_ddp += 2000;
 	if (is_down(BUTTON_DOWN)) player_2_ddp -= 2000;
 
-	simulate_player(&player_1_pos, &player_1_derPos, player_1_ddp, dt);
-	simulate_player(&player_2_pos, &player_2_derPos, player_2_ddp, dt);
+	simulate_player(&player_1_pos, &player_1_derPos, player_1_ddp, friction, dt);
+	simulate_player(&player_2_pos, &player_2_derPos, player_2_ddp, friction, dt);
 
 	ball_pos_x += ball_derPos_x * dt;//For whatever reason, this is causing the ball to just completely disappear from the screen. It's depressing. 8:30 ish in the video.
 	ball_pos_y += ball_derPos_y * dt;
@@ -50,19 +66,13 @@ simulate_game(Input* input, float dt) {
 
 
 	//Axis-Aligned Bounding Box collision test. Test for all 4 sides.
-	if (ball_pos_x + ball_half_size_x > 80 - player_half_size_x &&
-		ball_pos_x - ball_half_size_x < 80 + player_half_size_x &&
-		ball_pos_y + ball_half_size_y > player_2_pos - player_half_size_y &&
-		ball_pos_y + ball_half_size_y < player_2_pos + player_half_size_y) 
+	if(aabb_vs_aabb(ball_pos_x, ball_pos_y, ball_half_size_x, ball_half_size_y, 80, player_2_pos, player_half_size_x, player_half_size_y))
 	{
 		ball_pos_x = 80 - player_half_size_x - ball_half_size_x;
 		ball_derPos_x *= -1;
 		ball_derPos_y = (ball_pos_y - player_2_pos)*2 + player_2_derPos*.75/*Change velocity by dif in pos of player and ball. Can also add a fraction of player velocity.*/;
-	}else if 
-		(ball_pos_x + ball_half_size_x > -80 - player_half_size_x &&
-		ball_pos_x - ball_half_size_x < -80 + player_half_size_x &&
-		ball_pos_y + ball_half_size_y > player_1_pos - player_half_size_y &&
-		ball_pos_y + ball_half_size_y < player_1_pos + player_half_size_y)
+	}
+	else if (aabb_vs_aabb(ball_pos_x, ball_pos_y, ball_half_size_x, ball_half_size_y, -80, player_1_pos, player_half_size_x, player_half_size_y))
 	{
 		ball_pos_x = -80 + player_half_size_x + ball_half_size_x;
 		ball_derPos_x *= -1;
