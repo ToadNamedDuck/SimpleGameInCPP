@@ -73,7 +73,7 @@ simulate_game(Input* input, float dt) {
 	{
 		ball_pos_x = -80 + player_half_size_x + ball_half_size_x;
 		ball_derPos_x *= -1;
-		ball_derPos_y = (ball_pos_y - player_1_pos)*2 + player_2_derPos*.75;
+		ball_derPos_y = (ball_pos_y - player_1_pos)*2 + player_1_derPos*.75;
 	}
 
 	//Check for top and bottom of arena collision.
@@ -88,8 +88,7 @@ simulate_game(Input* input, float dt) {
 
 	if (ball_pos_x + ball_half_size_x > arena_half_size_x) {//Right and Left
 		//Right side scores point
-		//Reset ball
-		//ball goes to right.
+		//Reset ball. 13:23
 		/*
 		
 		*/
