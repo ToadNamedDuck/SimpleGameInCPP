@@ -64,7 +64,7 @@ simulate_game(Input* input, float dt) {
 	{
 		ball_pos_x = 80 - player_half_size_x - ball_half_size_x;
 		ball_derPos_x *= -1;
-		ball_derPos_y = player_2_derPos;
+		ball_derPos_y = (ball_pos_y - player_2_pos)*2 + player_2_derPos*.75/*Change velocity by dif in pos of player and ball. Can also add a fraction of player velocity.*/;
 	}else if 
 		(ball_pos_x + ball_half_size_x > -80 - player_half_size_x &&
 		ball_pos_x - ball_half_size_x < -80 + player_half_size_x &&
@@ -73,7 +73,7 @@ simulate_game(Input* input, float dt) {
 	{
 		ball_pos_x = -80 + player_half_size_x + ball_half_size_x;
 		ball_derPos_x *= -1;
-		ball_derPos_y = player_2_derPos;
+		ball_derPos_y = (ball_pos_y - player_1_pos)*2 + player_2_derPos*.75;
 	}
 
 	draw_rect(-80, player_1_pos, player_half_size_x, player_half_size_y, 0x5522ff);
