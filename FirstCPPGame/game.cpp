@@ -5,7 +5,7 @@
 float player_1_pos, player_1_derPos, player_2_pos, player_2_derPos;
 float arena_half_size_x = 85.f, arena_half_size_y = 45.f;
 float player_half_size_x = 2.5, player_half_size_y = 12;
-float ball_pos_x, ball_pos_y, ball_derPos_x = 100.f, ball_derPos_y;
+float ball_pos_x, ball_pos_y, ball_derPos_x = 100.f, ball_derPos_y, ball_half_size_x = 1, ball_half_size_y = 1;
 
 
 internal void 
@@ -53,7 +53,29 @@ simulate_game(Input* input, float dt) {
 	ball_pos_x += ball_derPos_x * dt;//For whatever reason, this is causing the ball to just completely disappear from the screen. It's depressing. 8:30 ish in the video.
 	ball_pos_y += ball_derPos_y * dt;
 
-	draw_rect(ball_pos_x, ball_pos_y, 1, 1, 0xffffff);//Ball
+	draw_rect(ball_pos_x, ball_pos_y, ball_half_size_x, ball_half_size_y, 0xffffff);//Ball
+
+
+	//Axis-Aligned Bounding Box collision test. Test for all 4 sides.
+	if (ball_pos_x + ball_half_size_x > 80 - player_half_size_x &&
+		ball_pos_x - ball_half_size_x < 80 + player_half_size_x &&
+		ball_pos_y + ball_half_size_y > player_2_pos - player_half_size_y &&
+		ball_pos_y + ball_half_size_y < player_2_pos + player_half_size_y) 
+	{
+		ball_pos_x = 80 - player_half_size_x - ball_half_size_x;
+		ball_derPos_x *= -1;
+		ball_derPos_y = player_2_derPos;
+	}else if 
+		(ball_pos_x + ball_half_size_x > -80 - player_half_size_x &&
+		ball_pos_x - ball_half_size_x < -80 + player_half_size_x &&
+		ball_pos_y + ball_half_size_y > player_1_pos - player_half_size_y &&
+		ball_pos_y + ball_half_size_y < player_1_pos + player_half_size_y)
+	{
+		ball_pos_x = -80 + player_half_size_x + ball_half_size_x;
+		ball_derPos_x *= -1;
+		ball_derPos_y = player_2_derPos;
+	}
+
 	draw_rect(-80, player_1_pos, player_half_size_x, player_half_size_y, 0x5522ff);
 	draw_rect(80, player_2_pos, player_half_size_x, player_half_size_y, 0x5522ff);
 
