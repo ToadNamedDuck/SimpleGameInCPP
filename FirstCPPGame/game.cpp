@@ -76,6 +76,16 @@ simulate_game(Input* input, float dt) {
 		ball_derPos_y = (ball_pos_y - player_1_pos)*2 + player_2_derPos*.75;
 	}
 
+	//Check for bottom and top of arena collision.
+	if (ball_pos_y + ball_half_size_y > arena_half_size_y) {
+		ball_pos_y = arena_half_size_y - ball_half_size_y;
+		ball_derPos_y *= -1;
+	}
+	else if (ball_pos_y - ball_half_size_y < -arena_half_size_y) {
+		ball_pos_y = -arena_half_size_y + ball_half_size_y;
+		ball_derPos_y *= -1;
+	}
+
 	draw_rect(-80, player_1_pos, player_half_size_x, player_half_size_y, 0x5522ff);
 	draw_rect(80, player_2_pos, player_half_size_x, player_half_size_y, 0x5522ff);
 
