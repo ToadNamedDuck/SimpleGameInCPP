@@ -7,6 +7,8 @@ float arena_half_size_x = 85.f, arena_half_size_y = 45.f;
 float player_half_size_x = 2.5, player_half_size_y = 12;
 float ball_pos_x, ball_pos_y, ball_derPos_x = 100.f, ball_derPos_y, ball_half_size_x = 1, ball_half_size_y = 1;
 
+int player_1_score, player_2_score;
+
 //Derivative of position is velocity. DP
 //Derivative of derivative of position is acceleration.
 //Input increases acceleration value, and *friction* can be applied by subtracting from acceleration velocity x friction.
@@ -91,14 +93,14 @@ simulate_game(Input* input, float dt) {
 		}
 		if (ball_pos_x + ball_half_size_x > arena_half_size_x)
 		{	//Right and Left
-			//Right side scores point
+			//Left side scores point
 			//Reset ball.
-			/*
-			*/
+			player_2_score += 1;
 			ball_pos_x = 0, ball_pos_y = 0, ball_derPos_y = 0;
 		}
 		else if (ball_pos_x - ball_half_size_x < -arena_half_size_x)
 		{
+			player_1_score += 1;
 			ball_pos_x = 0, ball_pos_y = 0, ball_derPos_y = 0;
 		}
 	}
