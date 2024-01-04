@@ -5,10 +5,13 @@
 //Since we are devloping using the Windows API, we can find resources for future API requests on MSDN.
 //Since we are making a graphical interface for the Windows platform, we need to include the windows.h header, and declare a WinMain as our entry point.
 #include <windows.h>
+#include <chrono>
+#include <thread>
 #include "utils.cpp"
 
 
  global_variable bool running = true;
+ global_variable float MAXFPS = 90.f;
 
 //We want our buffer variables global. void* is essentially "I don't care what you type it as" or similar to how I use var in another language.
 //Rework into struct.
@@ -95,7 +98,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 
 	Input input = {};
 
-	float delta_time = 0.016666f;//This is the delta time for when to render. Keeps game logic consistent on dif systems.
+	float delta_time = (float)1/MAXFPS;//This is the delta time for when to render. Keeps game logic consistent on dif systems.
 	//To start calculating that, we need to get the CPU time at the start and end of the frame.
 	LARGE_INTEGER frame_begin_time;
 	QueryPerformanceCounter(&frame_begin_time);
@@ -109,7 +112,9 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 
 	while (running) {
 		//This is where we create our game loop!
-
+		if (delta_time < (float)(1 / MAXFPS)) {
+			std::this_thread::sleep_for(std::chrono::microseconds((int)(1000000 * (float)(1 / MAXFPS - delta_time))));
+		}
 		//Get input
 		//During this step, we want to process messages we got and haven't dealt with yet.
 		MSG message;
