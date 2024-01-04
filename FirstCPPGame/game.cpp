@@ -105,6 +105,9 @@ simulate_game(Input* input, float dt) {
 		}
 	}
 
+	draw_number(player_2_score, -10, 40, 1.f, 0xbbffbb);
+	draw_number(player_1_score, 10, 40, 1.f, 0xbbffbb);
+
 	draw_rect(ball_pos_x, ball_pos_y, ball_half_size_x, ball_half_size_y, 0xffffff);//Ball
 	draw_rect(-80, player_1_pos, player_half_size_x, player_half_size_y, 0x5522ff);//Right
 	draw_rect(80, player_2_pos, player_half_size_x, player_half_size_y, 0x5522ff);//Left
