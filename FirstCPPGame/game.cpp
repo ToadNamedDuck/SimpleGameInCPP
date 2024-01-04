@@ -52,15 +52,16 @@ simulate_game(Input* input, float dt) {
 	draw_rect(0, 0, arena_half_size_x, arena_half_size_y, 0x00cb00);//Arena
 
 	float player_1_ddp = 0.f, player_2_ddp = 0.f;
-#if 0
+
 	if (is_down(BUTTON_W)) player_1_ddp += 2000;
 	if (is_down(BUTTON_S)) player_1_ddp -= 2000;
-#else
-	if (ball_pos_y > player_1_pos) player_1_ddp += 1300;
-	else if (ball_pos_y < player_1_pos) player_1_ddp -= 1300;
-#endif
+#if 0
 	if (is_down(BUTTON_UP)) player_2_ddp += 2000;
 	if (is_down(BUTTON_DOWN)) player_2_ddp -= 2000;
+#else
+	if (ball_pos_y > player_2_pos) player_2_ddp += 1300;
+	else if (ball_pos_y < player_2_pos) player_2_ddp -= 1300;
+#endif
 
 	simulate_player(&player_1_pos, &player_1_derPos, player_1_ddp, friction, dt);
 	simulate_player(&player_2_pos, &player_2_derPos, player_2_ddp, friction, dt);
