@@ -59,17 +59,13 @@ simulate_game(Input* input, float dt) {
 	if (is_down(BUTTON_UP)) player_2_ddp += 2000;
 	if (is_down(BUTTON_DOWN)) player_2_ddp -= 2000;
 #else
-	if (ball_pos_y > player_2_pos+2.f) player_2_ddp += 1300;//If the ball is further than 2 units above or below, then move.
-	else if (ball_pos_y < player_2_pos-2.f) player_2_ddp -= 1300;
-	if (player_2_derPos == 0 && player_2_pos > 0 && ball_pos_x > 0) {
-
-		player_2_derPos -= 10 * ball_pos_x / arena_half_size_x;
-
+	if ((ball_pos_y - player_2_pos) > 2.f || (ball_pos_y - player_2_pos) < 2.f) {
+		player_2_ddp = ((ball_pos_y - player_2_pos) * 750);
+		if (player_2_ddp > 1600) player_2_ddp = 1600;
+		if (player_2_ddp < -1600) player_2_ddp = -1600;
 	}
-	else if (player_2_derPos == 0 && player_2_pos < 0 && ball_pos_x > 0) {
-
-		player_2_derPos += 10 * ball_pos_x / arena_half_size_x;
-
+	if (ball_pos_x < 0 && (ball_derPos_y > 40 | ball_derPos_y < -40 )) {
+		player_2_ddp *= -.75f;
 	}
 #endif
 
