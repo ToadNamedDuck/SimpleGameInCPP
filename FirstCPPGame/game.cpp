@@ -45,6 +45,13 @@ aabb_vs_aabb(float p1_x, float p1_y, float p1_hs_x, float p1_hs_y,
 		p1_y + p1_hs_y < p2_y + p2_hs_y);
 }
 
+//Implement modes to implement menu, and separate the menu from gameplay. Maybe custom pause functionality.
+enum Gamemode {
+	GM_GAMEPLAY,
+	GM_MENU,
+};
+
+Gamemode current_gamemode;
 
 internal void 
 simulate_game(Input* input, float dt) {
