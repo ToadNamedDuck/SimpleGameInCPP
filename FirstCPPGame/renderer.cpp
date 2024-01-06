@@ -284,11 +284,12 @@ draw_text(const char *text, float x, float y, float size, u32 color) {
 	float original_y = y;
 
 	while (*text) {
-		const char **a_letter = letters[*text - 'A'];//** points to an array inside of the letters table.
-		float original_x = x;
-		for (int i = 0; i < 7; i++) {
-			const char* row = a_letter[i];
-			if (row != nullptr)
+		if(*text != 32){
+			const char** a_letter = letters[*text - 'A'];//** points to an array inside of the letters table.
+			float original_x = x;
+			for (int i = 0; i < 7; i++) {
+				const char* row = a_letter[i];
+				if (row != nullptr)
 				{
 					while (*row) {
 						if (*row == '0') {
@@ -301,8 +302,25 @@ draw_text(const char *text, float x, float y, float size, u32 color) {
 					x = original_x;
 				}
 			}
+		}
+		if ((*text != 73) && (*text != 84) && (*text != 79) && (*(text + 1) != 73) && (*(text +1) != 79) && (*(text + 1) != 84)) {
+				x += size * 6.f;//Kerning. Should do a way to clean this later.
+			}
+		else {
+			float x_copy = x;
+			if (*(text + 1) == 73 || *text == 73) {//I=
+				x += size * 5.f;
+			}
+			if (*(text + 1) == 79 || *text == 79) {//O
+				x = x_copy;;
+				x += size * 5.f;
+			}
+			if (*(text + 1) == 84 || *text == 84) {//T
+				x = x_copy;
+				x += size * 4.f;
+			}
+		}
 			text++;
-			x += size * 6.f;
 			y = original_y;
 	}
 

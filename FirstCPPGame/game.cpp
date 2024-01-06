@@ -191,9 +191,9 @@ simulate_game(Input* input, float dt) {
 			}break;
 			//Can add more cases for more buttons down the road.
 		}
-		draw_text("SOLO", -27.9, 2, .75, 0xffbf00);
+		draw_text("SOLO", -27, 2, .75, 0xffbf00);
 		draw_text("VS", 17, 2, .75, 0xffbf00);
-		draw_text("QUIT", 67.5, -38, .75, 0xffbf00);
+		draw_text("QUIT", 68.5, -38, .75, 0xffbf00);
 	}break;
 	}
 }
