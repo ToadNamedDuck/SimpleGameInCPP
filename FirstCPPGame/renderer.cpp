@@ -285,7 +285,10 @@ draw_text(const char *text, float x, float y, float size, u32 color) {
 
 	while (*text) {
 		if(*text != 32){
-			const char** a_letter = letters[*text - 'A'];//** points to an array inside of the letters table.
+			const char** a_letter;
+			if (*text == 47) a_letter = letters[27];// /
+			else if (*text == 46) a_letter = letters[26];//.
+			else a_letter = letters[*text - 'A'];//** points to an array inside of the letters table.
 			float original_x = x;
 			for (int i = 0; i < 7; i++) {
 				const char* row = a_letter[i];
