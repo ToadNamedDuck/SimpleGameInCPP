@@ -49,6 +49,8 @@ aabb_vs_aabb(float p1_x, float p1_y, float p1_hs_x, float p1_hs_y,
 enum Gamemode {
 	GM_MENU,//Making a variable from an enum type auto-selects the first member, so I had to change the order of the enum.
 	GM_GAMEPLAY,
+
+	GM_COUNT
 };
 
 Gamemode current_gamemode;
@@ -138,17 +140,35 @@ simulate_game(Input* input, float dt) {
 		}
 	}break;
 	case GM_MENU: {
-		if (hot_button == 0)
-		{
-			draw_rect(20, 0, 10, 10, 0xff0000);
-			draw_rect(-20, 0, 10, 10, 0xffbf00);
-			draw_rect(-20, 0, 8.5, 8.5, 0xff1010);
+		if (released(BUTTON_LEFT)) {
+			hot_button -= 1;
+			if (hot_button < 0) {
+				hot_button = GM_COUNT - 1;
+			}
 		}
-		else
-		{
-			draw_rect(20, 0, 10, 10, 0xffbf00);
-			draw_rect(20, 0, 8.5, 8.5, 0xff1010);
-			draw_rect(-20, 0, 10, 10, 0xff0000);
+		if (released(BUTTON_RIGHT)) {
+			hot_button += 1;
+			if (hot_button >= GM_COUNT) {
+				hot_button = 0;
+			}
+		}
+
+		switch (hot_button) {
+			case 0: 
+			{
+				{
+					draw_rect(20, 0, 10, 10, 0xff0000);
+					draw_rect(-20, 0, 10, 10, 0xffbf00);
+					draw_rect(-20, 0, 8.5, 8.5, 0xff1010);
+				}
+			}break;
+			case 1:
+			{
+				draw_rect(20, 0, 10, 10, 0xffbf00);
+				draw_rect(20, 0, 8.5, 8.5, 0xff1010);
+				draw_rect(-20, 0, 10, 10, 0xff0000);
+			}break;
+			//Can add more cases for more buttons down the road.
 		}
 	}break;
 	}
