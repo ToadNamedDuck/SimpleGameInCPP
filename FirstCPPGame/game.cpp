@@ -143,6 +143,7 @@ simulate_game(Input* input, float dt) {
 		}
 	}break;
 	case GM_MENU: {
+		draw_text(0, 0, 1, 0xff00ff);
 		if (released(BUTTON_LEFT)) {
 			hot_button -= 1;
 			if (hot_button < 0) {
@@ -161,9 +162,7 @@ simulate_game(Input* input, float dt) {
 				enemy_is_ai = hot_button ? 0 : 1;//If hot_button isn't 0, then enemy AI is 0 - As in, the second button is to play against someone else in your house.
 			}
 			else {
-				/*
-				* Quit button Functionality.
-				*/
+				running = false;
 			}
 		}
 
