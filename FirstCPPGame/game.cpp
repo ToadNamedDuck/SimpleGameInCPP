@@ -50,6 +50,7 @@ enum Gamemode {
 	GM_MENU,//Making a variable from an enum type auto-selects the first member, so I had to change the order of the enum.
 	GM_GAMEPLAY,
 
+	GM_QUIT,
 	GM_COUNT
 };
 
@@ -155,8 +156,15 @@ simulate_game(Input* input, float dt) {
 			}
 		}
 		if (released(BUTTON_ENTER)) {
-			current_gamemode = GM_GAMEPLAY;
-			enemy_is_ai = hot_button ? 0 : 1;//If hot_button isn't 0, then enemy AI is 0 - As in, the second button is to play against someone else in your house.
+			if (hot_button != GM_COUNT - 1) {
+				current_gamemode = GM_GAMEPLAY;
+				enemy_is_ai = hot_button ? 0 : 1;//If hot_button isn't 0, then enemy AI is 0 - As in, the second button is to play against someone else in your house.
+			}
+			else {
+				/*
+				* Quit button Functionality.
+				*/
+			}
 		}
 
 		switch (hot_button) {
@@ -166,6 +174,7 @@ simulate_game(Input* input, float dt) {
 					draw_rect(20, 0, 10, 10, 0xff0000);
 					draw_rect(-20, 0, 10, 10, 0xffbf00);
 					draw_rect(-20, 0, 8.5, 8.5, 0xff1010);
+					draw_rect(75, -40, 10, 5, 0xff0000);
 				}
 			}break;
 			case 1:
@@ -173,6 +182,15 @@ simulate_game(Input* input, float dt) {
 				draw_rect(20, 0, 10, 10, 0xffbf00);
 				draw_rect(20, 0, 8.5, 8.5, 0xff1010);
 				draw_rect(-20, 0, 10, 10, 0xff0000);
+				draw_rect(75, -40, 10, 5, 0xff0000);
+			}break;
+			case 2:
+			{
+				draw_rect(20, 0, 10, 10, 0xff0000);
+				draw_rect(-20, 0, 10, 10, 0xff0000);
+				draw_rect(75, -40, 10, 5, 0xffbf00);
+				draw_rect(75, -40, 9, 4, 0xff1010);
+
 			}break;
 			//Can add more cases for more buttons down the road.
 		}
