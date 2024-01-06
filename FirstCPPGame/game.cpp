@@ -143,7 +143,6 @@ simulate_game(Input* input, float dt) {
 		}
 	}break;
 	case GM_MENU: {
-		draw_text(0, 0, 1, 0xff00ff);
 		if (released(BUTTON_LEFT)) {
 			hot_button -= 1;
 			if (hot_button < 0) {
@@ -170,10 +169,10 @@ simulate_game(Input* input, float dt) {
 			case 0: 
 			{
 				{
-					draw_rect(20, 0, 10, 10, 0xff0000);
+					draw_rect(20, 0, 10, 10, 0xff0000);//Multiplayer
 					draw_rect(-20, 0, 10, 10, 0xffbf00);
-					draw_rect(-20, 0, 8.5, 8.5, 0xff1010);
-					draw_rect(75, -40, 10, 5, 0xff0000);
+					draw_rect(-20, 0, 8.5, 8.5, 0xff1010);//Single Player
+					draw_rect(75, -40, 10, 5, 0xff0000);//Quit
 				}
 			}break;
 			case 1:
@@ -189,10 +188,12 @@ simulate_game(Input* input, float dt) {
 				draw_rect(-20, 0, 10, 10, 0xff0000);
 				draw_rect(75, -40, 10, 5, 0xffbf00);
 				draw_rect(75, -40, 9, 4, 0xff1010);
-
 			}break;
 			//Can add more cases for more buttons down the road.
 		}
+		draw_text("SOLO", -27.9, 2, .75, 0xffbf00);
+		draw_text("VS", 17, 2, .75, 0xffbf00);
+		draw_text("QUIT", 67.5, -38, .75, 0xffbf00);
 	}break;
 	}
 }
