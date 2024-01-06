@@ -55,6 +55,7 @@ enum Gamemode {
 
 Gamemode current_gamemode;
 int hot_button;
+bool enemy_is_ai;
 
 internal void 
 simulate_game(Input* input, float dt) {
@@ -70,19 +71,20 @@ simulate_game(Input* input, float dt) {
 
 			if (is_down(BUTTON_W)) player_1_ddp += 2000;
 			if (is_down(BUTTON_S)) player_1_ddp -= 2000;
-#if 0
-			if (is_down(BUTTON_UP)) player_2_ddp += 2000;
-			if (is_down(BUTTON_DOWN)) player_2_ddp -= 2000;
-#else
-			if ((ball_pos_y - player_2_pos) > 2.f || (ball_pos_y - player_2_pos) < 2.f) {
-				player_2_ddp = ((ball_pos_y - player_2_pos) * 750);
-				if (player_2_ddp > 1600) player_2_ddp = 1600;
-				if (player_2_ddp < -1600) player_2_ddp = -1600;
+			if (!enemy_is_ai) {
+				if (is_down(BUTTON_UP)) player_2_ddp += 2000;
+				if (is_down(BUTTON_DOWN)) player_2_ddp -= 2000;
 			}
-			if (ball_pos_x < 0 && (ball_derPos_y > 40 | ball_derPos_y < -40)) {
-				player_2_ddp *= -.75f;
+			else {
+				if ((ball_pos_y - player_2_pos) > 2.f || (ball_pos_y - player_2_pos) < 2.f) {
+					player_2_ddp = ((ball_pos_y - player_2_pos) * 750);
+					if (player_2_ddp > 1600) player_2_ddp = 1600;
+					if (player_2_ddp < -1600) player_2_ddp = -1600;
+				}
+				if (ball_pos_x < 0 && (ball_derPos_y > 40 | ball_derPos_y < -40)) {
+					player_2_ddp *= -.75f;
+				}
 			}
-#endif
 
 			simulate_player(&player_1_pos, &player_1_derPos, player_1_ddp, friction, dt);
 			simulate_player(&player_2_pos, &player_2_derPos, player_2_ddp, friction, dt);
@@ -151,6 +153,10 @@ simulate_game(Input* input, float dt) {
 			if (hot_button >= GM_COUNT) {
 				hot_button = 0;
 			}
+		}
+		if (released(BUTTON_ENTER)) {
+			current_gamemode = GM_GAMEPLAY;
+			enemy_is_ai = hot_button ? 0 : 1;//If hot_button isn't 0, then enemy AI is 0 - As in, the second button is to play against someone else in your house.
 		}
 
 		switch (hot_button) {
