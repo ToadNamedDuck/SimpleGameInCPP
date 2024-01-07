@@ -58,8 +58,6 @@ Gamemode current_gamemode;
 int hot_button;
 bool enemy_is_ai;
 
-bool isPaused;
-int pauseButton;
 enum pauseMenu {
 	PM_RESUME,
 	PM_RESTART,
@@ -67,6 +65,9 @@ enum pauseMenu {
 
 	PM_COUNT
 };
+pauseMenu pause_menu;
+bool isPaused;
+int pause_button;
 
 internal void 
 simulate_game(Input* input, float dt) {
@@ -154,13 +155,15 @@ simulate_game(Input* input, float dt) {
 			draw_rect(80, player_2_pos, player_half_size_x, player_half_size_y, 0x5522ff);//Left
 		}
 		else {
+			draw_text("PAUSED", -15, 30, 1, 0xffbf00);
 			if (pressed(BUTTON_ESCAPE)) {
+				pause_button = 0;
 				isPaused = !isPaused;
 			}
 			if (released(BUTTON_LEFT)) {
 				pause_button -= 1;
 				if (pause_button < 0) {
-					hot_button = PM_COUNT - 1;
+					pause_button = PM_COUNT - 1;
 				}
 			}
 			if (released(BUTTON_RIGHT)) {
@@ -169,9 +172,27 @@ simulate_game(Input* input, float dt) {
 					pause_button = 0;
 				}
 			}
+			switch (pause_button) {
+				case 0: {
+					draw_text("RESUME", -40, 0, .75, 0xf0f000);
+					draw_text("RESTART", -10, 0, .75, 0xffbf00);
+					draw_text("RETURN TO MAIN MENU", -40, -15, .75, 0xffbf00);
+				}break;
+				case 1: {
+					draw_text("RESUME", -40, 0, .75, 0xffbf00);
+					draw_text("RESTART", -10, 0, .75, 0xf0f000);
+					draw_text("RETURN TO MAIN MENU", -40, -15, .75, 0xffbf00);
+				}break;
+				case 2: {
+					draw_text("RESUME", -40, 0, .75, 0xffbf00);
+					draw_text("RESTART", -10, 0, .75, 0xffbf00);
+					draw_text("RETURN TO MAIN MENU", -40, -15, .75, 0xf0f000);
+				}break;
+			}
 			if (released(BUTTON_ENTER)) {
 				switch (pause_button) {
 					case 0:{//Resume
+						pause_button = 0;
 						isPaused = !isPaused;
 					}break;
 					case 1:{//Reset Current Match
@@ -182,7 +203,6 @@ simulate_game(Input* input, float dt) {
 					}break;
 				}
 			}
-			draw_text("PAUSED", -15, 30, 1, 0xffbf00);
 		}
 	}break;
 	case GM_MENU: {
