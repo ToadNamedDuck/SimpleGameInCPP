@@ -23,7 +23,7 @@ simulate_player(float *pos, float *vel, float accel, float frict, float dt) {
 		//So if these are touching, we move the player back and cut their velocity.
 		*pos = arena_half_size_y - player_half_size_y;
 		*vel = 0;
-	}
+	} 
 	else if (*pos - player_half_size_y < -arena_half_size_y) {//bottom
 		*pos = -arena_half_size_y + player_half_size_y;
 		*vel = 0;
@@ -58,19 +58,30 @@ Gamemode current_gamemode;
 int hot_button;
 bool enemy_is_ai;
 
+bool isPaused;
+int pauseButton;
+enum pauseMenu {
+	PM_RESUME,
+	PM_RESTART,
+	PM_RETURN,
+
+	PM_COUNT
+};
+
 internal void 
 simulate_game(Input* input, float dt) {
 	draw_rect(0, 0, arena_half_size_x, arena_half_size_y, 0x00cb00);//Arena
 	//To combat overdraw, we can just make a little function to draw the borders specifically based on the arena size.
 	draw_arena_borders(arena_half_size_x, arena_half_size_y, 0x881253);
-
+	float player_1_ddp = 0.f, player_2_ddp = 0.f;
 
 	switch (current_gamemode) {
 	case GM_GAMEPLAY: {
+		if(!isPaused)
 		{
-
-			float player_1_ddp = 0.f, player_2_ddp = 0.f;
-
+			if (pressed(BUTTON_ESCAPE)) {
+				isPaused = !isPaused;
+			}
 			if (is_down(BUTTON_W)) player_1_ddp += 2000;
 			if (is_down(BUTTON_S)) player_1_ddp -= 2000;
 			if (!enemy_is_ai) {
@@ -141,6 +152,37 @@ simulate_game(Input* input, float dt) {
 			draw_rect(ball_pos_x, ball_pos_y, ball_half_size_x, ball_half_size_y, 0xffffff);//Ball
 			draw_rect(-80, player_1_pos, player_half_size_x, player_half_size_y, 0x5522ff);//Right
 			draw_rect(80, player_2_pos, player_half_size_x, player_half_size_y, 0x5522ff);//Left
+		}
+		else {
+			if (pressed(BUTTON_ESCAPE)) {
+				isPaused = !isPaused;
+			}
+			if (released(BUTTON_LEFT)) {
+				pause_button -= 1;
+				if (pause_button < 0) {
+					hot_button = PM_COUNT - 1;
+				}
+			}
+			if (released(BUTTON_RIGHT)) {
+				pause_button += 1;
+				if (pause_button >= PM_COUNT) {
+					pause_button = 0;
+				}
+			}
+			if (released(BUTTON_ENTER)) {
+				switch (pause_button) {
+					case 0:{//Resume
+						isPaused = !isPaused;
+					}break;
+					case 1:{//Reset Current Match
+
+					}break;
+					case 2: {//Return to menu
+
+					}break;
+				}
+			}
+			draw_text("PAUSED", -15, 30, 1, 0xffbf00);
 		}
 	}break;
 	case GM_MENU: {
