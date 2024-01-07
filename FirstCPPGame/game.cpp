@@ -60,8 +60,9 @@ bool enemy_is_ai;
 
 internal void 
 simulate_game(Input* input, float dt) {
-	clear_screen(0x881253);
 	draw_rect(0, 0, arena_half_size_x, arena_half_size_y, 0x00cb00);//Arena
+	//To combat overdraw, we can just make a little function to draw the borders specifically based on the arena size.
+	draw_arena_borders(arena_half_size_x, arena_half_size_y, 0x881253);
 
 
 	switch (current_gamemode) {

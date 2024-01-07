@@ -28,6 +28,25 @@ global_variable float scale_multiplier = 0.01f;
 //So 100 is a full screen, whereas 10 is 10% of the screen.
 
 internal void
+draw_arena_borders(float arena_x, float arena_y, u32 color)
+{
+	//covert x and y to pixel coords
+	arena_x *= render_state.height * scale_multiplier;
+	arena_y *= render_state.height * scale_multiplier;
+
+	int x0 = (int)((float)render_state.width * .5f - arena_x);//Left-most side. Half width minus the pixel coord of x for new pos
+	int x1 = (int)((float)render_state.width * .5f + arena_x);//Right
+	int y0 = (int)((float)render_state.height * .5f - arena_y);//Bottom
+	int y1 = (int)((float)render_state.height * .5f + arena_y);//Top
+
+	//Draw the rects with the values we just made
+	draw_rect_in_pixels(0, 0, render_state.width, y0, color);
+	draw_rect_in_pixels(0, y1, x1, render_state.height, color);
+	draw_rect_in_pixels(0, y0, x0, y1, color);
+	draw_rect_in_pixels(x1, y0, render_state.width, render_state.height, color);
+}
+
+internal void
 draw_rect(float x, float y, float half_size_x, float half_size_y, u32 color) {
 	//To make the rect relative to screen size, we need to multiply them by the width and height of the screen - or one or the other.
 	//Height will proportionally scale the rectangles. Same height but wider screens see more of the world, which in some cases, is ideal.
