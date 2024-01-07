@@ -175,17 +175,17 @@ simulate_game(Input* input, float dt) {
 			switch (pause_button) {
 				case 0: {
 					draw_text("RESUME", -40, 0, .75, 0xf0f000);
-					draw_text("RESTART", -10, 0, .75, 0xffbf00);
+					draw_text("RESTART", 12, 0, .75, 0xffbf00);
 					draw_text("RETURN TO MAIN MENU", -40, -15, .75, 0xffbf00);
 				}break;
 				case 1: {
 					draw_text("RESUME", -40, 0, .75, 0xffbf00);
-					draw_text("RESTART", -10, 0, .75, 0xf0f000);
+					draw_text("RESTART", 12, 0, .75, 0xf0f000);
 					draw_text("RETURN TO MAIN MENU", -40, -15, .75, 0xffbf00);
 				}break;
 				case 2: {
 					draw_text("RESUME", -40, 0, .75, 0xffbf00);
-					draw_text("RESTART", -10, 0, .75, 0xffbf00);
+					draw_text("RESTART", 12, 0, .75, 0xffbf00);
 					draw_text("RETURN TO MAIN MENU", -40, -15, .75, 0xf0f000);
 				}break;
 			}
@@ -281,6 +281,8 @@ simulate_game(Input* input, float dt) {
 			}break;
 			//Can add more cases for more buttons down the road.
 		}
+		draw_text("PONG", -20, 40, 2, 0xffbf00);
+		draw_text("BY TOADNAMEDDUCK", -39.5, 25, .85, 0xffbf00);
 		draw_text("SOLO", -27, 2, .75, 0xffbf00);
 		draw_text("VS", 17, 2, .75, 0xffbf00);
 		draw_text("QUIT", 68.5, -38, .75, 0xffbf00);

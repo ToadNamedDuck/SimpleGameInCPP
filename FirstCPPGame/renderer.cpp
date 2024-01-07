@@ -337,9 +337,13 @@ draw_text(const char *text, float x, float y, float size, u32 color) {
 				x = x_copy;;
 				x += size * 5.f;
 			}
-			if (*(text + 1) == 84 || *text == 84) {//T
+			if (*text == 84) {//T
 				x = x_copy;
 				x += size * 4.f;
+			}
+			if (*(text + 1) == 84) {
+				x = x_copy;
+				x += size * 5.f;
 			}
 		}
 			text++;
