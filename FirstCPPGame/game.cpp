@@ -196,10 +196,37 @@ simulate_game(Input* input, float dt) {
 						isPaused = !isPaused;
 					}break;
 					case 1:{//Reset Current Match
-
+						pause_button = 0;
+						player_1_pos = 0.f;
+						player_2_pos = 0.f;
+						player_1_derPos = 0.f;
+						player_2_derPos = 0.f;
+						player_1_ddp = 0.f;
+						player_2_ddp = 0.f;
+						ball_pos_x = 0.f;
+						ball_pos_y = 0.f;
+						ball_derPos_x = 130.f;
+						ball_derPos_y = 0.f;
+						player_1_score = 0;
+						player_2_score = 0;
+						isPaused = !isPaused;
 					}break;
 					case 2: {//Return to menu
-
+						pause_button = 0;
+						player_1_pos = 0.f;
+						player_2_pos = 0.f;
+						player_1_derPos = 0.f;
+						player_2_derPos = 0.f;
+						player_1_ddp = 0.f;
+						player_2_ddp = 0.f;
+						ball_pos_x = 0.f;
+						ball_pos_y = 0.f;
+						ball_derPos_x = 130.f;
+						ball_derPos_y = 0.f;
+						player_1_score = 0;
+						player_2_score = 0;
+						isPaused = !isPaused;
+						current_gamemode = GM_MENU;
 					}break;
 				}
 			}
