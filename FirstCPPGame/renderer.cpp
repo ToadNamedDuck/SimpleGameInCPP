@@ -9,16 +9,16 @@ clear_screen(u32 color) {//reset the pixels to a provided color.
 }
 
 internal void
-draw_rect_in_pixels(int x0, int y0, int x1, int y1, u32 color) {//Now we need to offset a region to draw a rectangle in.
+draw_rect_in_pixels(int x0, int y0, int x1, int y1, u32 color) {
 	x0 = clamp(0, x0, render_state.width);
 	x1 = clamp(0, x1, render_state.width);
 	y0 = clamp(0, y0, render_state.height);
 	y1 = clamp(0, y1, render_state.height);
 
-	for (int y = y0; y < y1; y++) {//Starting y is y0, end is y1
+	for (int y = y0; y < y1; y++) {
 		unsigned int* pixel = (u32*)render_state.memory + x0 + y*render_state.width;//We offset the pixel by the current x, and then y*the width of the window.
-		for (int x = x0; x < x1; x++) {//starting x is x0, and is x1
-			*pixel++ = color;//Set the pixels in this region to the provided color.
+		for (int x = x0; x < x1; x++) {
+			*pixel++ = color;
 		}
 	}
 }
@@ -48,7 +48,7 @@ draw_arena_borders(float arena_x, float arena_y, u32 color)
 
 internal void
 draw_rect(float x, float y, float half_size_x, float half_size_y, u32 color) {
-	//To make the rect relative to screen size, we need to multiply them by the width and height of the screen - or one or the other.
+	//To make the rect relative to screen size, we need to multiply them by the width or height of the screen.
 	//Height will proportionally scale the rectangles. Same height but wider screens see more of the world, which in some cases, is ideal.
 	//Personally I would do width and height so monitors see the same area, but alas.
 	x *= render_state.height * scale_multiplier;
@@ -358,8 +358,6 @@ internal void
 draw_number(int number, float x, float y, float size, u32 color)
 {
 	//According to the tutorial, most other games take a font (or even a sheet), rasterize it, and convert it to a bitmap to draw that.
-	//But that is outside the scope of the tutorial - but the concept is something I want to accomplish in the near future.
-	//I have pretty much copy-pasted this part from Dan Zaidan, so thank you for providing the source - and the tutorial for all of this to be possible for me.
 	float half_size = size * .5f;
 
 	bool drew_number = false;

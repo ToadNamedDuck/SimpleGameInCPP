@@ -34,18 +34,13 @@ simulate_player(float *pos, float *vel, float accel, float frict, float dt) {
 internal bool
 aabb_vs_aabb(float p1_x, float p1_y, float p1_hs_x, float p1_hs_y,
 	float p2_x, float p2_y, float p2_hs_x, float p2_hs_y) {
-	/*
-	* Ideally, when I work on this in a more object-oriented manner, I would just pass the objects of things I want to check against each other.
-	* Like players and enemies, or fireballs and arrows against a wall. Etc.
-	* A task for a future me, I know you'll be up for the task!
-	*/
 	return (p1_x + p1_hs_x > p2_x - p2_hs_x &&
 		p1_x - p1_hs_x < p2_x + p2_hs_x&&
 		p1_y + p1_hs_y > p2_y - p2_hs_y&&
 		p1_y + p1_hs_y < p2_y + p2_hs_y);
 }
 
-//Implement modes to implement menu, and separate the menu from gameplay. Maybe custom pause functionality.
+//Implement modes to implement menu, and separate the menu from gameplay.
 enum Gamemode {
 	GM_MENU,//Making a variable from an enum type auto-selects the first member, so I had to change the order of the enum.
 	GM_GAMEPLAY,
@@ -72,7 +67,6 @@ int pause_button;
 internal void 
 simulate_game(Input* input, float dt) {
 	draw_rect(0, 0, arena_half_size_x, arena_half_size_y, 0x00cb00);//Arena
-	//To combat overdraw, we can just make a little function to draw the borders specifically based on the arena size.
 	draw_arena_borders(arena_half_size_x, arena_half_size_y, 0x881253);
 	float player_1_ddp = 0.f, player_2_ddp = 0.f;
 
@@ -108,8 +102,6 @@ simulate_game(Input* input, float dt) {
 				ball_pos_x += ball_derPos_x * dt;
 				ball_pos_y += ball_derPos_y * dt;
 
-
-				//Axis-Aligned Bounding Box collision test. Test for all 4 sides.
 				if (aabb_vs_aabb(ball_pos_x, ball_pos_y, ball_half_size_x, ball_half_size_y, 80, player_2_pos, player_half_size_x, player_half_size_y))
 				{
 					ball_pos_x = 80 - player_half_size_x - ball_half_size_x;
@@ -138,8 +130,8 @@ simulate_game(Input* input, float dt) {
 					PlaySound(L"bounce", NULL, SND_RESOURCE | SND_ASYNC);
 				}
 				if (ball_pos_x + ball_half_size_x > arena_half_size_x)
-				{	//Right and Left
-					//Left side scores point
+				{	//Right and Left Arena check - goal
+					//score point
 					//Reset ball.
 					player_2_score += 1;
 					ball_pos_x = 0, ball_pos_y = 0, ball_derPos_y = 0;
