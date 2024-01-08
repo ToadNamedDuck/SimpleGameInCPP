@@ -5,6 +5,7 @@
 //Since we are devloping using the Windows API, we can find resources for future API requests on MSDN.
 //Since we are making a graphical interface for the Windows platform, we need to include the windows.h header, and declare a WinMain as our entry point.
 #include <windows.h>
+#include "resource1.h"
 #include <chrono>
 #include <thread>
 #include "utils.cpp"

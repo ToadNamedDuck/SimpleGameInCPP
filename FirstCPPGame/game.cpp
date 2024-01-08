@@ -115,23 +115,27 @@ simulate_game(Input* input, float dt) {
 					ball_pos_x = 80 - player_half_size_x - ball_half_size_x;
 					ball_derPos_x *= -1;
 					ball_derPos_y = (ball_pos_y - player_2_pos) * 2 + player_2_derPos * .75/*Change velocity by dif in pos of player and ball. Can also add a fraction of player velocity.*/;
+					PlaySound(L"bounce", NULL, SND_RESOURCE | SND_ASYNC);
 				}
 				else if (aabb_vs_aabb(ball_pos_x, ball_pos_y, ball_half_size_x, ball_half_size_y, -80, player_1_pos, player_half_size_x, player_half_size_y))
 				{
 					ball_pos_x = -80 + player_half_size_x + ball_half_size_x;
 					ball_derPos_x *= -1;
 					ball_derPos_y = (ball_pos_y - player_1_pos) * 2 + player_1_derPos * .75;
+					PlaySound(L"bounce", NULL, SND_RESOURCE | SND_ASYNC);
 				}
 				//Check for top and bottom of arena collision.
 				if (ball_pos_y + ball_half_size_y > arena_half_size_y)
 				{
 					ball_pos_y = arena_half_size_y - ball_half_size_y;
 					ball_derPos_y *= -1;
+					PlaySound(L"bounce", NULL, SND_RESOURCE | SND_ASYNC);
 				}
 				else if (ball_pos_y - ball_half_size_y < -arena_half_size_y)
 				{
 					ball_pos_y = -arena_half_size_y + ball_half_size_y;
 					ball_derPos_y *= -1;
+					PlaySound(L"bounce", NULL, SND_RESOURCE | SND_ASYNC);
 				}
 				if (ball_pos_x + ball_half_size_x > arena_half_size_x)
 				{	//Right and Left
@@ -139,11 +143,13 @@ simulate_game(Input* input, float dt) {
 					//Reset ball.
 					player_2_score += 1;
 					ball_pos_x = 0, ball_pos_y = 0, ball_derPos_y = 0;
+					PlaySound(L"point", NULL, SND_RESOURCE | SND_ASYNC);
 				}
 				else if (ball_pos_x - ball_half_size_x < -arena_half_size_x)
 				{
 					player_1_score += 1;
 					ball_pos_x = 0, ball_pos_y = 0, ball_derPos_y = 0;
+					PlaySound(L"point", NULL, SND_RESOURCE | SND_ASYNC);
 				}
 			}
 
@@ -161,12 +167,14 @@ simulate_game(Input* input, float dt) {
 				isPaused = !isPaused;
 			}
 			if (released(BUTTON_LEFT)) {
+				PlaySound(L"move", NULL, SND_RESOURCE | SND_ASYNC);
 				pause_button -= 1;
 				if (pause_button < 0) {
 					pause_button = PM_COUNT - 1;
 				}
 			}
 			if (released(BUTTON_RIGHT)) {
+				PlaySound(L"move", NULL, SND_RESOURCE | SND_ASYNC);
 				pause_button += 1;
 				if (pause_button >= PM_COUNT) {
 					pause_button = 0;
@@ -190,6 +198,7 @@ simulate_game(Input* input, float dt) {
 				}break;
 			}
 			if (released(BUTTON_ENTER)) {
+				PlaySound(L"select", NULL, SND_RESOURCE | SND_SYNC);
 				switch (pause_button) {
 					case 0:{//Resume
 						pause_button = 0;
@@ -234,12 +243,14 @@ simulate_game(Input* input, float dt) {
 	}break;
 	case GM_MENU: {
 		if (released(BUTTON_LEFT)) {
+			PlaySound(L"move", NULL, SND_RESOURCE | SND_ASYNC);
 			hot_button -= 1;
 			if (hot_button < 0) {
 				hot_button = GM_COUNT - 1;
 			}
 		}
 		if (released(BUTTON_RIGHT)) {
+			PlaySound(L"move", NULL, SND_RESOURCE | SND_ASYNC);
 			hot_button += 1;
 			if (hot_button >= GM_COUNT) {
 				hot_button = 0;
@@ -247,6 +258,7 @@ simulate_game(Input* input, float dt) {
 		}
 		if (released(BUTTON_ENTER)) {
 			if (hot_button != GM_COUNT - 1) {
+				PlaySound(L"select", NULL, SND_RESOURCE | SND_SYNC);
 				current_gamemode = GM_GAMEPLAY;
 				enemy_is_ai = hot_button ? 0 : 1;//If hot_button isn't 0, then enemy AI is 0 - As in, the second button is to play against someone else in your house.
 			}
